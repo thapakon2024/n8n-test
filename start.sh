@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # n8n startup script for Render deployment
 set -e
@@ -6,20 +6,35 @@ set -e
 echo "🚀 Starting n8n on Render..."
 
 # Wait for database to be ready if using PostgreSQL
-if [ "$DB_TYPE" = "postgresdb" ]; then
+if [ "$DB_TYPE" = "postgresdb" ] && [ -n "$DB_POSTGRESDB_HOST" ]; then
     echo "⏳ Waiting for PostgreSQL database to be ready..."
     
-    # Simple check for database connectivity
-    until pg_isready -h "$DB_POSTGRESDB_HOST" -p "$DB_POSTGRESDB_PORT" -U "$DB_POSTGRESDB_USER" 2>/dev/null; do
-        echo "Database is not ready yet. Waiting 5 seconds..."
+    # Simple check for database connectivity with timeout
+    MAX_ATTEMPTS=30
+    ATTEMPT=0
+    
+    while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+        if pg_isready -h "$DB_POSTGRESDB_HOST" -p "$DB_POSTGRESDB_PORT" -U "$DB_POSTGRESDB_USER" >/dev/null 2>&1; then
+            echo "✅ Database is ready!"
+            break
+        fi
+        
+        ATTEMPT=$((ATTEMPT + 1))
+        echo "Database not ready yet (attempt $ATTEMPT/$MAX_ATTEMPTS). Waiting 5 seconds..."
         sleep 5
     done
     
-    echo "✅ Database is ready!"
+    if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+        echo "⚠️ Database connection timeout. Proceeding anyway..."
+    fi
     
     # Run database migrations
     echo "🔄 Running database migrations..."
-    n8n db:migrate
+    if ! n8n db:migrate; then
+        echo "⚠️ Database migration failed. Proceeding anyway..."
+    fi
+else
+    echo "📝 Using SQLite database (no external database configured)"
 fi
 
 # Initialize n8n if first time

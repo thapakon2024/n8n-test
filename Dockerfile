@@ -4,8 +4,9 @@ FROM node:18-alpine
 # Set working directory
 WORKDIR /app
 
-# Install n8n globally
-RUN npm install -g n8n
+# Install required packages and n8n
+RUN apk add --no-cache postgresql-client wget && \
+    npm install -g n8n
 
 # Create n8n user and set permissions (use available GID/UID)
 RUN addgroup n8n && \
@@ -39,4 +40,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD wget --no-verbose --tries=1 --spider http://localhost:5678/healthz || exit 1
 
 # Start n8n
-CMD ["/app/start.sh"]
+CMD ["/bin/sh", "/app/start.sh"]
