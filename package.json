@@ -1,30 +1,30 @@
 {
-  "name": "n8n-render-deploy",
-  "version": "1.0.0",
-  "description": "n8n deployment configuration for Render",
-  "main": "index.js",
-  "scripts": {
-    "start": "./start.sh",
-    "build": "echo 'No build step required'",
-    "dev": "n8n start",
-    "db:migrate": "n8n db:migrate"
-  },
-  "keywords": [
-    "n8n",
-    "workflow",
-    "automation",
-    "render"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
-  "dependencies": {
-    "n8n": "^1.15.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/n8n-render-deploy.git"
-  }
+    "name": "n8n-render-deploy",
+    "version": "1.0.0",
+    "description": "n8n deployment configuration for Render",
+    "main": "index.js",
+    "scripts": {
+        "start": "./start.sh",
+        "build": "echo 'No build step required'",
+        "dev": "n8n start",
+        "db:migrate": "n8n db:migrate"
+    },
+    "keywords": [
+        "n8n",
+        "workflow",
+        "automation",
+        "render"
+    ],
+    "author": "Your Name",
+    "license": "MIT",
+    "dependencies": {
+        "n8n": "^1.15.0"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yourusername/n8n-render-deploy.git"
+    }
 }

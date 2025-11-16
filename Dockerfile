@@ -7,9 +7,9 @@ WORKDIR /app
 # Install n8n globally
 RUN npm install -g n8n
 
-# Create n8n user and set permissions
-RUN addgroup -g 1000 n8n && \
-    adduser -u 1000 -G n8n -s /bin/sh -D n8n
+# Create n8n user and set permissions (use available GID/UID)
+RUN addgroup n8n && \
+    adduser -G n8n -s /bin/sh -D n8n
 
 # Create necessary directories with proper permissions
 RUN mkdir -p /home/n8n/.n8n && \
