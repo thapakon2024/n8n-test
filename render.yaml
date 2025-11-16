@@ -1,0 +1,82 @@
+services:
+  - type: web
+    name: n8n-app
+    runtime: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: N8N_HOST
+        value: 0.0.0.0
+      - key: N8N_PORT  
+        value: 5678
+      - key: N8N_PROTOCOL
+        value: https
+      - key: WEBHOOK_URL
+        fromService:
+          type: web
+          name: n8n-app
+          property: host
+      - key: N8N_EDITOR_BASE_URL
+        fromService:
+          type: web
+          name: n8n-app
+          property: host
+      # Database Configuration (PostgreSQL recommended for production)
+      - key: DB_TYPE
+        value: postgresdb
+      - key: DB_POSTGRESDB_HOST
+        fromDatabase:
+          name: n8n-database
+          property: host
+      - key: DB_POSTGRESDB_PORT
+        fromDatabase:
+          name: n8n-database
+          property: port
+      - key: DB_POSTGRESDB_DATABASE
+        fromDatabase:
+          name: n8n-database
+          property: database
+      - key: DB_POSTGRESDB_USER
+        fromDatabase:
+          name: n8n-database
+          property: user
+      - key: DB_POSTGRESDB_PASSWORD
+        fromDatabase:
+          name: n8n-database
+          property: password
+      # Security & Authentication
+      - key: N8N_BASIC_AUTH_ACTIVE
+        value: "true"
+      - key: N8N_BASIC_AUTH_USER
+        generateValue: true
+      - key: N8N_BASIC_AUTH_PASSWORD
+        generateValue: true
+      # Encryption
+      - key: N8N_ENCRYPTION_KEY
+        generateValue: true
+      # JWT Secret
+      - key: N8N_JWT_AUTH_HEADER
+        value: authorization
+      - key: N8N_JWT_AUTH_HEADER_VALUE_PREFIX
+        value: Bearer
+      # Additional Configuration
+      - key: N8N_SECURE_COOKIE
+        value: "false"
+      - key: N8N_LOG_LEVEL
+        value: info
+      - key: N8N_METRICS
+        value: "true"
+      - key: EXECUTIONS_PROCESS
+        value: main
+      - key: EXECUTIONS_MODE
+        value: regular
+      # File system
+      - key: N8N_USER_FOLDER
+        value: /home/n8n/.n8n
+    healthCheckPath: /healthz
+
+databases:
+  - name: n8n-database
+    databaseName: n8n
+    user: n8n_user
+    plan: starter
