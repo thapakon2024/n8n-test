@@ -53,4 +53,4 @@ echo "🔐 Username: ${N8N_BASIC_AUTH_USER:-admin}"
 echo "🔐 Password: ${N8N_BASIC_AUTH_PASSWORD:-[check environment variables]}"
 
 # Start n8n with proper configuration
-exec n8n start
+exec n8n
